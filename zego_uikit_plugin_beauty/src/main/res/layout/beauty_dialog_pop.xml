@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content">
+
+  <com.zegocloud.uikit.plugin.beauty.components.SeekBarWithNumber
+    android:id="@+id/seekBarWithNumber"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="43dp"
+    android:layout_marginEnd="43dp"
+    android:max="100"
+    android:maxHeight="3dp"
+    android:progressDrawable="@drawable/beauty_seek_bar"
+    android:thumb="@drawable/beauty_seek_thumb"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:textBackground="@drawable/beauty_icon_indicator"
+    app:textColor="#ff1b1a1c"
+    app:textSize="15sp" />
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/layout_feature_root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="21dp"
+    android:background="@drawable/beauty_bg_dialog"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/seekBarWithNumber">
+
+    <View
+      android:id="@+id/short_line"
+      android:layout_width="40dp"
+      android:layout_height="5dp"
+      android:layout_marginTop="7dp"
+      android:background="@drawable/beauty_shape_line"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.tabs.TabLayout
+      android:id="@+id/beauty_tab_layout"
+      android:layout_width="match_parent"
+      android:layout_height="43dp"
+      android:background="@android:color/transparent"
+      app:layout_constraintTop_toBottomOf="@+id/short_line"
+      app:tabMode="scrollable" />
+
+    <TextView
+      android:id="@+id/beauty_subtype_title"
+      android:layout_width="wrap_content"
+      android:layout_height="43dp"
+      android:background="@android:color/transparent"
+      android:drawableStart="@drawable/beauty_back"
+      android:drawablePadding="16dp"
+      android:gravity="center_vertical"
+      android:paddingStart="16dp"
+      android:paddingEnd="16dp"
+      android:textColor="@color/white"
+      android:visibility="gone"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/short_line"
+      app:tabMode="scrollable" />
+
+    <View
+      android:id="@+id/line"
+      android:layout_width="match_parent"
+      android:layout_height="1dp"
+      android:background="#22ffffff"
+      app:layout_constraintTop_toBottomOf="@id/beauty_tab_layout" />
+
+    <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/recyclerview_items"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="22dp"
+      android:paddingBottom="37dp"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/line" />
+
+  </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

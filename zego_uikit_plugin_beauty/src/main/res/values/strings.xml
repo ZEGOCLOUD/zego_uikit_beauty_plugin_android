@@ -1,0 +1,136 @@
+<resources>
+  <string name="app_name">ZEGOCLOUDBeautyEffectsDemo</string>
+
+
+  <string name="liveaudioroom_you">You</string>
+  <string name="liveaudioroom_speaker">Speaker</string>
+  <string name="liveaudioroom_host">Host</string>
+
+
+  <string name="permission_explain_camera">Camera access is required to start a live.</string>
+  <string name="permission_explain_mic">Microphone access is required to start a live.</string>
+  <string name="permission_explain_camera_mic">Camera and microphone access are required to start a live.</string>
+  <string name="settings_camera">Please go to system settings to allow camera access. </string>
+  <string name="settings_mic">Please go to system settings to allow microphone access. </string>
+  <string name="settings_camera_mic">Please go to system settings to allow camera and microphone access.</string>
+  <string name="ok">OK</string>
+  <string name="cancel">Cancel</string>
+  <string name="reject">Reject</string>
+  <string name="settings">Settings</string>
+
+
+  <string name="beauty_reset">Reset</string>
+  <string name="beauty_none">None</string>
+
+  <string name="beauty_group_beautify">Beautify</string>
+  <string name="beauty_group_makeups">Makeup</string>
+  <string name="beauty_group_filters">Filters</string>
+  <string name="beauty_group_stickers">Stickers</string>
+  <string name="beauty_group_backgrounds">Background</string>
+  <string name="beauty_group_style_makeups">StyleMakeups</string>
+
+  <string name="beauty_group_natural">Natural</string>
+  <string name="beauty_group_gray">Gray</string>
+  <string name="beauty_group_dreamy">Dreamy</string>
+
+  <string name="beauty_group_basic">Basic</string>
+  <string name="beauty_basic_smoothing">Smoothing</string>
+  <string name="beauty_basic_skin_tone">Skin Tone</string>
+  <string name="beauty_basic_blusher">Blusher</string>
+  <string name="beauty_basic_sharpening">Sharpening</string>
+  <string name="beauty_basic_wrinkles">Wrinkles</string>
+  <string name="beauty_basic_dark_circles">Dark Circles</string>
+
+  <string name="beauty_group_advanced">Advanced</string>
+  <string name="beauty_advanced_face_slimming">Face Slimming</string>
+  <string name="beauty_advanced_eye_enlarging">Enlarging</string>
+  <string name="beauty_advanced_eye_brightening">Brightening</string>
+  <string name="beauty_advanced_chin_lengthening">Chin Lengthening</string>
+  <string name="beauty_advanced_mouth_reshape">Reshape</string>
+  <string name="beauty_advanced_teeth_whitening">Whitening</string>
+  <string name="beauty_advanced_nose_slimming">Slimming</string>
+  <string name="beauty_advanced_nose_lengthening">Lengthening</string>
+  <string name="beauty_advanced_face_shortening">Face Shortening</string>
+  <string name="beauty_advanced_mandible_slimming">Mandible </string>
+  <string name="beauty_advanced_cheekbone_slimming">Cheekbone </string>
+  <string name="beauty_advanced_forehead_slimming">Forehead </string>
+
+  <string name="beauty_group_makeup_lipstick">Lipstick</string>
+  <string name="beauty_makeup_lipstick_cameo_pink">Cameo Pink</string>
+  <string name="beauty_makeup_lipstick_sweet_orange">Sweet Orange</string>
+  <string name="beauty_makeup_lipstick_rust_red">Rust Red</string>
+  <string name="beauty_makeup_lipstick_coral">Coral</string>
+  <string name="beauty_makeup_lipstick_red_velvet">Red Velvet</string>
+
+  <string name="beauty_group_makeup_blusher">Blusher</string>
+  <string name="beauty_makeup_blusher_slightly_drunk">Slightly Drunk</string>
+  <string name="beauty_makeup_blusher_peach">Peach</string>
+  <string name="beauty_makeup_blusher_milky_orange">Milky Orange</string>
+  <string name="beauty_makeup_blusher_milky_apricot_pink">Apricot Pink</string>
+  <string name="beauty_makeup_blusher_milky_sweet_orange">Sweet Orange</string>
+
+
+  <string name="beauty_group_makeup_eyelashes">Eyelashes</string>
+  <string name="beauty_makeup_eyelashes_natural">Natural</string>
+  <string name="beauty_makeup_eyelashes_tender">Tender</string>
+  <string name="beauty_makeup_eyelashes_curl">curl</string>
+  <string name="beauty_makeup_eyelashes_everlong">long</string>
+  <string name="beauty_makeup_eyelashes_thick">thick</string>
+
+  <string name="beauty_group_makeup_eyeliner">EyeLiner</string>
+  <string name="beauty_makeup_eyeliner_natural">Natural</string>
+  <string name="beauty_makeup_eyeliner_cat_eye">Cat Eye</string>
+  <string name="beauty_makeup_eyeliner_naughty">Naughty</string>
+  <string name="beauty_makeup_eyeliner_innocent">Innocent</string>
+  <string name="beauty_makeup_eyeliner_dignified">Dignified</string>
+
+  <string name="beauty_group_makeup_eyeshadow">EyeShadow</string>
+  <string name="beauty_makeup_eyeshadow_pink_mist">Pink Mist</string>
+  <string name="beauty_makeup_eyeshadow_shimmer_pink">Shimmer Pink</string>
+  <string name="beauty_makeup_eyeshadow_tea_brown">Tea Brown</string>
+  <string name="beauty_makeup_eyeshadow_bright_orange">Bright Orange</string>
+  <string name="beauty_makeup_eyeshadow_mocha_brown">Mocha Brown</string>
+
+  <string name="beauty_group_makeup_colored_contacts">Colored Contacts</string>
+  <string name="beauty_makeup_colored_contacts_darknight_black">DarkNight Black</string>
+  <string name="beauty_makeup_colored_contacts_starry_blue">Starry Blue</string>
+  <string name="beauty_makeup_colored_contacts_brown_green">Brown Green</string>
+  <string name="beauty_makeup_colored_contacts_lights_brown">Lights Brown</string>
+  <string name="beauty_makeup_colored_contacts_chocolate_contacts">Chocolate Contacts</string>
+
+  <string name="beauty_group_style_makeup">Style</string>
+  <string name="beauty_group_style_innocent_eyes">Innocent Eyes</string>
+  <string name="beauty_group_style_milky_eyes">Milky Eyes</string>
+  <string name="beauty_group_style_cutie_cool">Cutie Cool</string>
+  <string name="beauty_group_style_pure_sexy">Pure Sexy</string>
+  <string name="beauty_group_style_flawless">Flawless</string>
+
+  <string name="beauty_group_filter">Filters</string>
+  <string name="beauty_filter_natural_creamy">Creamy</string>
+  <string name="beauty_filter_natural_brighten">Brighten</string>
+  <string name="beauty_filter_natural_fresh">Fresh</string>
+  <string name="beauty_filter_natural_autumn">Autumn</string>
+  <string name="beauty_filter_gray_monet">Monet</string>
+  <string name="beauty_filter_gray_night">Night</string>
+  <string name="beauty_filter_gray_filmlike">Film-like</string>
+  <string name="beauty_filter_dreamy_sunset">Sunset</string>
+  <string name="beauty_filter_dreamy_cozily">Cozily</string>
+  <string name="beauty_filter_dreamy_sweet">Sweet</string>
+
+  <string name="beauty_group_sticker">Stickers</string>
+  <string name="beauty_sticker_animal">Animal</string>
+  <string name="beauty_sticker_dive">Dive</string>
+  <string name="beauty_sticker_cat">Cat</string>
+  <string name="beauty_sticker_watermelon">WaterMelon</string>
+  <string name="beauty_sticker_deer">Deer</string>
+  <string name="beauty_sticker_cool_girl">Cool Girl</string>
+  <string name="beauty_sticker_clown">Clown</string>
+  <string name="beauty_sticker_claw_machine">Claw Machine</string>
+  <string name="beauty_sticker_sailor_moon">Sailor Moon</string>
+
+  <string name="beauty_group_background">Background</string>
+  <string name="beauty_background_portrait_segmentation">Portrait Segmentation</string>
+  <string name="beauty_background_green_screen_segmentation">GreenScreen Segmentation</string>
+  <string name="beauty_background_mosaicing">Mosaicing</string>
+  <string name="beauty_background_gaussian_blur">Gaussian Blur</string>
+</resources>
