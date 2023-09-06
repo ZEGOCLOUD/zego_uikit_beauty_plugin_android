@@ -31,7 +31,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    api project(path: ':zego_uikit_plugin_adapter')
+    api 'com.github.ZEGOCLOUD:zego_uikit_plugin_adapter_android:pre_release_2.1.0'
 
     implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation 'com.google.android.material:material:1.6.1'
