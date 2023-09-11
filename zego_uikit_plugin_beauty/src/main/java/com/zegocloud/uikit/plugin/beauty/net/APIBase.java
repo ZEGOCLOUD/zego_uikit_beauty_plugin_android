@@ -69,8 +69,6 @@ public class APIBase {
                 }
 
                 final String finalStr = str;
-                Log.d(TAG, "onResponse: api: " + call.request().url().toString());
-                Log.d(TAG, "onResponse: respJson: " + finalStr);
 
                 try {
                     JSONObject jsonObject = new JSONObject(finalStr);
@@ -112,7 +110,6 @@ public class APIBase {
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Log.d(TAG, "onFailure: " + e.getMessage());
 
                 if (reqCallback != null) {
                     okHandler.post(new Runnable() {
