@@ -101,7 +101,7 @@ public class APIBase {
                         okHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                reqCallback.onResponse(ErrorcodeConstants.ErrorJSONFormatInvalid, "Json解析异常", null);
+                                reqCallback.onResponse(ErrorcodeConstants.ErrorJSONFormatInvalid, "Json Parse Error", null);
                             }
                         });
                     }
@@ -118,7 +118,7 @@ public class APIBase {
                     okHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            reqCallback.onResponse(ErrorcodeConstants.ErrorFailNetwork, "网络异常", null);
+                            reqCallback.onResponse(ErrorcodeConstants.ErrorFailNetwork, "Network Error", null);
                         }
                     });
                 }
