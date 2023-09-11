@@ -81,6 +81,7 @@ public class BeautyDialog extends BottomSheetDialog {
         for (BeautyGroupItem groupItem : configGroupItems) {
             Tab tab = tabLayout.newTab();
             TextView customView = new TextView(getContext());
+            customView.setGravity(Gravity.CENTER);
             customView.setText(groupItem.groupName);
             customView.setTextColor(Color.parseColor("#4dffffff"));
             tab.setCustomView(customView);
@@ -257,7 +258,21 @@ public class BeautyDialog extends BottomSheetDialog {
         Tab selectedTab = tabLayout.getTabAt(tabLayout.getSelectedTabPosition());
         updateTabTitle(selectedTab, true);
         BeautyGroupItem groupItem = (BeautyGroupItem) selectedTab.getTag();
-        beautyAdapter.setBeautyItems(groupItem.beautyFeatureItems);
+        if (groupItem.beautyGroup == BeautyGroup.MAKEUPS) {
+            List<BeautyFeatureItem> makeupItems = new ArrayList<>();
+            for (BeautyGroupItem configGroupItem : configGroupItems) {
+                if (configGroupItem.beautyGroup == BeautyGroup.MAKEUPS) {
+                    for (BeautyFeatureItem beautyFeatureItem : configGroupItem.beautyFeatureItems) {
+                        if (beautyFeatureItem.beautyFeature.getParentType() == null) {
+                            makeupItems.add(beautyFeatureItem);
+                        }
+                    }
+                }
+            }
+            beautyAdapter.setBeautyItems(makeupItems);
+        } else {
+            beautyAdapter.setBeautyItems(groupItem.beautyFeatureItems);
+        }
         RecyclerView recyclerviewItems = findViewById(R.id.recyclerview_items);
         recyclerviewItems.setAdapter(beautyAdapter);
         recyclerviewItems.setLayoutManager(

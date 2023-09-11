@@ -57,8 +57,6 @@ import java.util.Set;
 
 public class EffectSDKHelper {
 
-    private static String portraitSegmentationImagePath = "BackgroundImages/image1.jpg";
-
     public static void setResources(Context context, String rootFolder, String resourceFolderName) {
         boolean assetFileExists = isAssetFileExists(context, resourceFolderName);
         String resourceRootFolder = rootFolder + File.separator + resourceFolderName;
@@ -376,13 +374,12 @@ public class EffectSDKHelper {
 
     public static List<BeautyFeature> getBackgrounds() {
         List<BeautyFeature> background = new ArrayList<>();
-        background.add(
-            new BeautyFeature(ZegoBeautyPluginEffectsType.BACKGROUND_GREEN_SCREEN_SEGMENTATION, BeautyGroup.BACKGROUND, new GreenScreenSegmentationEditor(
-                ZegoEffectsService.getResourceRootFolder() + File.separator + portraitSegmentationImagePath)));
+//        background.add(
+//            new BeautyFeature(ZegoBeautyPluginEffectsType.BACKGROUND_GREEN_SCREEN_SEGMENTATION, BeautyGroup.BACKGROUND, new GreenScreenSegmentationEditor(
+//                ZegoEffectsService.getResourceRootFolder() + File.separator + portraitSegmentationImagePath)));
         background.add(
             new BeautyFeature(ZegoBeautyPluginEffectsType.BACKGROUND_PORTRAIT_SEGMENTATION, BeautyGroup.BACKGROUND, 100,
-                100, 100, new PortraitSegmentationEditor(
-                ZegoEffectsService.getResourceRootFolder() + File.separator + portraitSegmentationImagePath)));
+                100, 100, new PortraitSegmentationEditor()));
         background.add(new BeautyFeature(ZegoBeautyPluginEffectsType.BACKGROUND_MOSAICING, BeautyGroup.BACKGROUND,
             new MosaicEditor()));
         background.add(new BeautyFeature(ZegoBeautyPluginEffectsType.BACKGROUND_GAUSSIAN_BLUR, BeautyGroup.BACKGROUND,

@@ -108,7 +108,11 @@ public class ZegoUIKitBeautyPlugin implements ZegoBeautyPluginProtocol {
 
     @Override
     public Dialog getBeautyDialog(Context context) {
-        return new BeautyDialog(context);
+        if (effectsService.isEffectSDKInit()) {
+            return new BeautyDialog(context);
+        } else {
+            return null;
+        }
     }
 
     public BeautyFeature getBeautyFeature(ZegoBeautyPluginEffectsType beautyType) {

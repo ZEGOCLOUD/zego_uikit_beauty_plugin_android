@@ -1,5 +1,8 @@
 package com.zegocloud.uikit.plugin.beauty.bean;
 
+import android.text.TextUtils;
+import com.zegocloud.uikit.plugin.adapter.plugins.beauty.ZegoBeautyPluginConfig;
+import com.zegocloud.uikit.plugin.beauty.ZegoEffectsService;
 import com.zegocloud.uikit.plugin.beauty.ZegoUIKitBeautyPlugin;
 import im.zego.effects.ZegoEffects;
 import im.zego.effects.entity.ZegoEffectsBigEyesParam;
@@ -33,6 +36,7 @@ import im.zego.effects.entity.ZegoEffectsWhitenParam;
 import im.zego.effects.entity.ZegoEffectsWrinklesRemovingParam;
 import im.zego.effects.enums.ZegoEffectsMosaicType;
 import im.zego.effects.enums.ZegoEffectsScaleMode;
+import java.io.File;
 
 public abstract class BeautyEditor {
 
@@ -596,22 +600,28 @@ public abstract class BeautyEditor {
             //            getZEGOEffects().setChromaKeyBackgroundBlurParam(param);
 
             ZegoEffectsChromaKeyParam param = new ZegoEffectsChromaKeyParam();
-//            param.similarity = 0;
-//            param.smoothness = 80;
+            //            param.similarity = 0;
+            //            param.smoothness = 80;
             param.opacity = 100 - value;
-//            param.borderSize = 1;
+            //            param.borderSize = 1;
             getZEGOEffects().setChromaKeyParam(param);
         }
     }
 
     public static class PortraitSegmentationEditor extends BeautyEditor {
 
-        public PortraitSegmentationEditor(String path) {
-            super(path);
+        public PortraitSegmentationEditor() {
+
         }
 
         @Override
         public void enable(boolean enable) {
+            ZegoBeautyPluginConfig beautyPluginConfig = ZegoUIKitBeautyPlugin.getInstance().getBeautyPluginConfig();
+            String parentPath = ZegoEffectsService.getResourceRootFolder() + File.separator + "BackgroundImages";
+            path = parentPath + File.separator + "image1.jpg";
+            if (beautyPluginConfig != null && !TextUtils.isEmpty(beautyPluginConfig.segmentationBackgroundImageName)) {
+                path = parentPath + File.separator + beautyPluginConfig.segmentationBackgroundImageName;
+            }
             getZEGOEffects().enableChromaKey(false);
             getZEGOEffects().setPortraitSegmentationBackgroundPath(path, ZegoEffectsScaleMode.SCALE_TO_FILL);
             getZEGOEffects().enablePortraitSegmentation(enable);
