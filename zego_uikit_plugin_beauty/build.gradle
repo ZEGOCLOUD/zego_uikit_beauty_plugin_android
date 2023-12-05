@@ -4,7 +4,7 @@ plugins {
 
 android {
     namespace 'com.zegocloud.uikit.plugin.beauty'
-    compileSdk 32
+    compileSdk 34
 
     defaultConfig {
         minSdk 21
@@ -31,10 +31,10 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    api 'com.github.ZEGOCLOUD:zego_uikit_plugin_adapter_android:[2.1.0,)'
+    api 'com.github.ZEGOCLOUD:zego_uikit_plugin_adapter_android:[2.1.2,)'
 
-    implementation 'androidx.appcompat:appcompat:1.5.1'
-    implementation 'com.google.android.material:material:1.6.1'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.10.0'
 
     implementation 'com.squareup.okhttp3:okhttp:4.9.3'
     implementation "com.google.code.gson:gson:2.9.1"
