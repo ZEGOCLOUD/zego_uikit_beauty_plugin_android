@@ -574,8 +574,6 @@ public abstract class BeautyEditor {
         }
     }
 
-    private static final String TAG = "BeautyEditor";
-
     // MARK: - Background
     public static class GreenScreenSegmentationEditor extends BeautyEditor {
 

@@ -11,7 +11,7 @@ import java.io.InputStream;
 public class ZegoUtil {
 
 
-    
+    private static final String TAG = "ZegoUtil";
     /**
      * 拷贝文件
      * @param context
@@ -58,7 +58,7 @@ public class ZegoUtil {
             }
 
         } catch (Exception e) {
-            Log.d("Tag", "copyFileFromAssets " + "IOException-" + e.getMessage());
+            Log.d(TAG, "copyFileFromAssets " + "IOException-" + e.getMessage());
         }
     }
 

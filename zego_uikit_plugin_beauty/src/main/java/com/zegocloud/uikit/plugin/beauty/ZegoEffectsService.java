@@ -1,7 +1,6 @@
 package com.zegocloud.uikit.plugin.beauty;
 
 import android.content.Context;
-import android.util.Log;
 import com.zegocloud.uikit.plugin.adapter.plugins.beauty.IBeautyEventHandler;
 import com.zegocloud.uikit.plugin.adapter.plugins.beauty.ZegoBeautyPluginEffectsType;
 import com.zegocloud.uikit.plugin.adapter.plugins.beauty.ZegoBeautyPluginFaceDetectionResult;
@@ -31,8 +30,6 @@ public class ZegoEffectsService {
 
     private Map<BeautyGroup, List<BeautyFeature>> beautyFeaturesMap = new HashMap<>();
     private Map<ZegoBeautyPluginEffectsType, Integer> beautyParams = new HashMap<>();
-
-    private static final String TAG = "ZegoEffectsService";
 
     private static String resourceRootFolder = "";
     private IBeautyEventHandler eventHandler;
@@ -82,12 +79,12 @@ public class ZegoEffectsService {
 
             @Override
             public void onFaceDetectionResult(ZegoEffectsFaceDetectionResult[] results, ZegoEffects effects) {
-                for (ZegoEffectsFaceDetectionResult result : results) {
-                    Log.d(TAG,
-                        "onFaceDetectionResult,results.size:" + results.length + ",rect : point(" + result.rect.x + ","
-                            + result.rect.y + "),width:" + result.rect.width + ",height:" + result.rect.height
-                            + ",getScore: " + result.getScore());
-                }
+                //                for (ZegoEffectsFaceDetectionResult result : results) {
+                //                    Log.d(TAG,
+                //                        "onFaceDetectionResult,results.size:" + results.length + ",rect : point(" + result.rect.x + ","
+                //                            + result.rect.y + "),width:" + result.rect.width + ",height:" + result.rect.height
+                //                            + ",getScore: " + result.getScore());
+                //                }
                 if (eventHandler != null) {
                     ZegoBeautyPluginFaceDetectionResult[] detectionResults = new ZegoBeautyPluginFaceDetectionResult[results.length];
                     for (int i = 0; i < results.length; i++) {
