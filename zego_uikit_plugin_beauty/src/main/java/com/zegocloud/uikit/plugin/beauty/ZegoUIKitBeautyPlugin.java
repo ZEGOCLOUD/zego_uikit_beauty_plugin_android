@@ -4,6 +4,7 @@ import android.app.Application;
 import android.app.Dialog;
 import android.content.Context;
 import com.zegocloud.uikit.plugin.adapter.plugins.ZegoPluginType;
+import com.zegocloud.uikit.plugin.adapter.plugins.beauty.LicenceProvider;
 import com.zegocloud.uikit.plugin.adapter.plugins.beauty.ZegoBeautyPluginConfig;
 import com.zegocloud.uikit.plugin.adapter.plugins.beauty.ZegoBeautyPluginEffectsType;
 import com.zegocloud.uikit.plugin.adapter.plugins.beauty.ZegoBeautyPluginInitCallback;
@@ -55,6 +56,11 @@ public class ZegoUIKitBeautyPlugin implements ZegoBeautyPluginProtocol {
                 }
             }
         });
+    }
+
+    @Override
+    public void setLicenceProvider(LicenceProvider provider) {
+        effectsService.setLicenceProvider(provider);
     }
 
     @Override

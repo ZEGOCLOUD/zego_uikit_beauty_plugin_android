@@ -7,7 +7,6 @@ import android.content.res.AssetManager;
 import android.net.Uri;
 import android.text.TextUtils;
 import com.zegocloud.uikit.plugin.adapter.plugins.beauty.ZegoBeautyPluginEffectsType;
-import com.zegocloud.uikit.plugin.beauty.bean.BeautyEditor;
 import com.zegocloud.uikit.plugin.beauty.bean.BeautyEditor.BlurEditor;
 import com.zegocloud.uikit.plugin.beauty.bean.BeautyEditor.BlusherEditor;
 import com.zegocloud.uikit.plugin.beauty.bean.BeautyEditor.BlusherMakeupEditor;
@@ -24,7 +23,6 @@ import com.zegocloud.uikit.plugin.beauty.bean.BeautyEditor.FaceShorteningEditor;
 import com.zegocloud.uikit.plugin.beauty.bean.BeautyEditor.FaceSlimmingEditor;
 import com.zegocloud.uikit.plugin.beauty.bean.BeautyEditor.FilterEditor;
 import com.zegocloud.uikit.plugin.beauty.bean.BeautyEditor.ForeheadSlimmingEditor;
-import com.zegocloud.uikit.plugin.beauty.bean.BeautyEditor.GreenScreenSegmentationEditor;
 import com.zegocloud.uikit.plugin.beauty.bean.BeautyEditor.LipstickEditor;
 import com.zegocloud.uikit.plugin.beauty.bean.BeautyEditor.MandibleSlimmingEditor;
 import com.zegocloud.uikit.plugin.beauty.bean.BeautyEditor.MosaicEditor;
@@ -100,7 +98,7 @@ public class EffectSDKHelper {
         return false;
     }
 
-    public static void getLicence(Context context, String baseUrl, long appID, String appSign,
+    public static void getLicense(Context context, String baseUrl, long appID, String appSign,
         IGetLicenseCallback callback) {
         SharedPreferences sp = context.getSharedPreferences("effect", Context.MODE_PRIVATE);
         if (sp.contains("licence")) {

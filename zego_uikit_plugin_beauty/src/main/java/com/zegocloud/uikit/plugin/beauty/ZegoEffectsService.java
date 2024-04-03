@@ -1,7 +1,10 @@
 package com.zegocloud.uikit.plugin.beauty;
 
 import android.content.Context;
+import android.text.TextUtils;
+import com.zegocloud.uikit.plugin.adapter.plugins.beauty.BeautyPluginLicenseSetter;
 import com.zegocloud.uikit.plugin.adapter.plugins.beauty.IBeautyEventHandler;
+import com.zegocloud.uikit.plugin.adapter.plugins.beauty.LicenceProvider;
 import com.zegocloud.uikit.plugin.adapter.plugins.beauty.ZegoBeautyPluginEffectsType;
 import com.zegocloud.uikit.plugin.adapter.plugins.beauty.ZegoBeautyPluginFaceDetectionResult;
 import com.zegocloud.uikit.plugin.adapter.plugins.beauty.ZegoBeautyPluginRect;
@@ -34,39 +37,54 @@ public class ZegoEffectsService {
     private static String resourceRootFolder = "";
     private IBeautyEventHandler eventHandler;
     private boolean enableFaceDetection;
+    private LicenceProvider provider;
 
     public static String getResourceRootFolder() {
         return resourceRootFolder;
     }
 
     public void init(Context context, long appID, String appSign, IGetLicenseCallback callback) {
-
         String cacheDir = context.getExternalFilesDir(null).getPath();
         String resourceFolderName = "BeautyResources";
         resourceRootFolder = cacheDir + File.separator + resourceFolderName;
         // step 1, setResources
         EffectSDKHelper.setResources(context, cacheDir, resourceFolderName);
 
-        // step 2, getLicence
-        EffectSDKHelper.getLicence(context, BACKEND_API_URL, appID, appSign, new IGetLicenseCallback() {
-            @Override
-            public void onGetLicense(int code, String message, License license) {
-                if (code == 0) {
-                    initEffectsSDKInner(context, license);
+        if (!TextUtils.isEmpty(appSign)) {
+            // step 2, getLicence
+            EffectSDKHelper.getLicense(context, BACKEND_API_URL, appID, appSign, new IGetLicenseCallback() {
+                @Override
+                public void onGetLicense(int code, String message, License license) {
+                    if (code == 0) {
+                        initEffectsSDKInner(context, license.getLicense());
+                    }
+                    if (callback != null) {
+                        callback.onGetLicense(code, message, license);
+                    }
+                    if (eventHandler != null) {
+                        eventHandler.onInitResult(code, message);
+                    }
                 }
-                if (callback != null) {
-                    callback.onGetLicense(code, message, license);
-                }
+            });
+        } else {
+            if (provider != null) {
+                provider.onLicenseRequired(new BeautyPluginLicenseSetter() {
+                    @Override
+                    public void setLicence(Context context, String license) {
+                        initEffectsSDKInner(context, license);
+                    }
+                });
+            } else {
                 if (eventHandler != null) {
-                    eventHandler.onInitResult(code, message);
+                    eventHandler.onInitResult(-1, "Please init with appSign or set a LicenceProvider to pass a license");
                 }
             }
-        });
+        }
     }
 
-    private void initEffectsSDKInner(Context context, License license) {
+    private void initEffectsSDKInner(Context context, String license) {
         // step 3 create effect
-        zegoEffects = ZegoEffects.create(license.getLicense(), context);
+        zegoEffects = ZegoEffects.create(license, context);
         zegoEffects.enableFaceDetection(enableFaceDetection);
         zegoEffects.setEventHandler(new ZegoEffectsEventHandler() {
             @Override
@@ -236,5 +254,9 @@ public class ZegoEffectsService {
 
     public void setEventHandler(IBeautyEventHandler eventHandler) {
         this.eventHandler = eventHandler;
+    }
+
+    public void setLicenceProvider(LicenceProvider provider) {
+        this.provider = provider;
     }
 }
