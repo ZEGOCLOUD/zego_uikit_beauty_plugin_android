@@ -296,7 +296,7 @@ public class BeautyDialog extends BottomSheetDialog {
                             BeautyFeature parentFeature = ZegoUIKitBeautyPlugin.getInstance()
                                 .getBeautyFeature(clickFeatureParentType);
                             for (ZegoBeautyPluginEffectsType subType : parentFeature.getSubTypes()) {
-                                ZegoUIKitBeautyPlugin.getInstance().resetBeautyValue(subType);
+                                ZegoUIKitBeautyPlugin.getInstance().resetBeautyValueToDefault(subType);
                             }
                             ZegoUIKitBeautyPlugin.getInstance()
                                 .enableBeautyFeature(clickFeature.getParentType(), false);
@@ -440,14 +440,14 @@ public class BeautyDialog extends BottomSheetDialog {
                     for (ZegoBeautyPluginEffectsType subType : beautyFeature.getSubTypes()) {
                         int value = ZegoUIKitBeautyPlugin.getInstance().getBeautyFeatureValue(subType);
                         if (value != beautyFeature.getDefaultValue()) {
-                            ZegoUIKitBeautyPlugin.getInstance().resetBeautyValue(subType);
+                            ZegoUIKitBeautyPlugin.getInstance().resetBeautyValueToDefault(subType);
                         }
                     }
                 }
             } else {
                 int value = ZegoUIKitBeautyPlugin.getInstance().getBeautyFeatureValue(beautyFeature.getBeautyType());
                 if (value != beautyFeature.getDefaultValue()) {
-                    ZegoUIKitBeautyPlugin.getInstance().resetBeautyValue(beautyFeature.getBeautyType());
+                    ZegoUIKitBeautyPlugin.getInstance().resetBeautyValueToDefault(beautyFeature.getBeautyType());
                 }
             }
         }

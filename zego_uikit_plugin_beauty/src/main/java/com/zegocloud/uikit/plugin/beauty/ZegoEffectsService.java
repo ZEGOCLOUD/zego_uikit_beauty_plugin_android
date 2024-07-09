@@ -2,6 +2,7 @@ package com.zegocloud.uikit.plugin.beauty;
 
 import android.content.Context;
 import android.text.TextUtils;
+import com.tencent.mmkv.MMKV;
 import com.zegocloud.uikit.plugin.adapter.plugins.beauty.BeautyPluginLicenseSetter;
 import com.zegocloud.uikit.plugin.adapter.plugins.beauty.IBeautyEventHandler;
 import com.zegocloud.uikit.plugin.adapter.plugins.beauty.LicenceProvider;
@@ -9,6 +10,8 @@ import com.zegocloud.uikit.plugin.adapter.plugins.beauty.ZegoBeautyPluginEffects
 import com.zegocloud.uikit.plugin.adapter.plugins.beauty.ZegoBeautyPluginFaceDetectionResult;
 import com.zegocloud.uikit.plugin.adapter.plugins.beauty.ZegoBeautyPluginRect;
 import com.zegocloud.uikit.plugin.beauty.bean.BeautyEditor;
+import com.zegocloud.uikit.plugin.beauty.bean.BeautyEditor.PortraitSegmentationEditor;
+import com.zegocloud.uikit.plugin.beauty.bean.BeautyEditor.StickerEditor;
 import com.zegocloud.uikit.plugin.beauty.bean.BeautyFeature;
 import com.zegocloud.uikit.plugin.beauty.bean.BeautyGroup;
 import com.zegocloud.uikit.plugin.beauty.net.IGetLicenseCallback;
@@ -24,6 +27,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import timber.log.Timber;
 
 public class ZegoEffectsService {
 
@@ -38,6 +42,8 @@ public class ZegoEffectsService {
     private IBeautyEventHandler eventHandler;
     private boolean enableFaceDetection;
     private LicenceProvider provider;
+    private boolean saveLastBeautyParam;
+    private MMKV mmkv;
 
     public static String getResourceRootFolder() {
         return resourceRootFolder;
@@ -49,6 +55,7 @@ public class ZegoEffectsService {
         resourceRootFolder = cacheDir + File.separator + resourceFolderName;
         // step 1, setResources
         EffectSDKHelper.setResources(context, cacheDir, resourceFolderName);
+        MMKV.initialize(context);
 
         if (!TextUtils.isEmpty(appSign)) {
             // step 2, getLicence
@@ -76,11 +83,14 @@ public class ZegoEffectsService {
                 });
             } else {
                 if (eventHandler != null) {
-                    eventHandler.onInitResult(-1, "Please init with appSign or set a LicenceProvider to pass a license");
+                    eventHandler.onInitResult(-1,
+                        "Please init with appSign or set a LicenceProvider to pass a license");
                 }
             }
         }
     }
+
+    private static final String TAG = "ZegoEffectsService";
 
     private void initEffectsSDKInner(Context context, String license) {
         // step 3 create effect
@@ -90,6 +100,9 @@ public class ZegoEffectsService {
             @Override
             public void onError(ZegoEffects effects, int errorCode, String desc) {
                 super.onError(effects, errorCode, desc);
+                Timber.d(
+                    "initEffectsSDK onError() called with: = [" + "], errorCode = [" + errorCode + "], desc = [" + desc
+                        + "]");
                 if (eventHandler != null) {
                     eventHandler.onError(errorCode, desc);
                 }
@@ -123,6 +136,19 @@ public class ZegoEffectsService {
         });
         // step 4 enableAbilities
         beautyFeaturesMap = EffectSDKHelper.getAllFeatures();
+        mmkv = MMKV.mmkvWithID("beauty");
+        if (saveLastBeautyParam) {
+            for (String string : mmkv.allKeys()) {
+                int value = mmkv.decodeInt(string);
+                ZegoBeautyPluginEffectsType beautyType = ZegoBeautyPluginEffectsType.getByName(string);
+                enableBeauty(beautyType, true);
+                BeautyFeature beautyFeature = getBeautyFeature(beautyType);
+                beautyFeature.getEditor().apply(value);
+                beautyParams.put(beautyType, value);
+            }
+        } else {
+            mmkv.clear();
+        }
     }
 
     public void removeBackgrounds() {
@@ -170,6 +196,9 @@ public class ZegoEffectsService {
         BeautyFeature beautyFeature = getBeautyFeature(beautyType);
         beautyFeature.getEditor().apply(value);
         beautyParams.put(beautyType, value);
+        if (saveLastBeautyParam && mmkv != null) {
+            mmkv.encode(beautyType.toString(), value);
+        }
     }
 
     public int getBeautyValue(ZegoBeautyPluginEffectsType beautyType) {
@@ -181,14 +210,40 @@ public class ZegoEffectsService {
         return integer;
     }
 
-    public void resetBeautyValue(ZegoBeautyPluginEffectsType beautyType) {
+    public void resetBeautyValueToDefault(ZegoBeautyPluginEffectsType beautyType) {
         if (zegoEffects == null) {
             return;
         }
+        if (beautyType != null) {
+            resetBeautyValueToDefaultInner(beautyType);
+        } else {
+            for (List<BeautyFeature> value : beautyFeaturesMap.values()) {
+                for (BeautyFeature beautyFeature : value) {
+                    resetBeautyValueToDefaultInner(beautyFeature.getBeautyType());
+                }
+            }
+        }
+    }
+
+    private void resetBeautyValueToDefaultInner(ZegoBeautyPluginEffectsType beautyType) {
         BeautyFeature beautyFeature = getBeautyFeature(beautyType);
         beautyFeature.getEditor().apply(beautyFeature.getDefaultValue());
         beautyParams.remove(beautyType);
+        if (saveLastBeautyParam && mmkv != null) {
+            mmkv.remove(beautyType.toString());
+        }
     }
+
+    private void resetBeautyValueToNoneInner(ZegoBeautyPluginEffectsType beautyType) {
+        BeautyFeature beautyFeature = getBeautyFeature(beautyType);
+        if (beautyFeature.getEditor() instanceof StickerEditor
+            || beautyFeature.getEditor() instanceof PortraitSegmentationEditor) {
+            enableBeauty(beautyType, false);
+        } else {
+            setBeautyValue(beautyType, beautyFeature.getMinValue());
+        }
+    }
+
 
     public void initEnv(int captureWidth, int captureHeight) {
         if (zegoEffects == null) {
@@ -206,6 +261,14 @@ public class ZegoEffectsService {
 
     public boolean isEffectSDKInit() {
         return zegoEffects != null;
+    }
+
+    public void saveLastBeautyParam(boolean saveLastBeautyParam) {
+        this.saveLastBeautyParam = saveLastBeautyParam;
+    }
+
+    public boolean isLastBeautyParamSaved() {
+        return saveLastBeautyParam;
     }
 
     public void enableFaceDetection(boolean enable) {
@@ -258,5 +321,20 @@ public class ZegoEffectsService {
 
     public void setLicenceProvider(LicenceProvider provider) {
         this.provider = provider;
+    }
+
+    public void resetBeautyValueToNone(ZegoBeautyPluginEffectsType beautyType) {
+        if (zegoEffects == null) {
+            return;
+        }
+        if (beautyType != null) {
+            resetBeautyValueToNoneInner(beautyType);
+        } else {
+            for (List<BeautyFeature> value : beautyFeaturesMap.values()) {
+                for (BeautyFeature beautyFeature : value) {
+                    resetBeautyValueToNoneInner(beautyFeature.getBeautyType());
+                }
+            }
+        }
     }
 }

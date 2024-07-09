@@ -4,6 +4,7 @@ import com.zegocloud.uikit.plugin.adapter.plugins.beauty.ZegoBeautyPluginEffects
 import java.util.List;
 
 /**
+ * operator for beautyType,provide function.
  * beauty:  1. enable function  2.set param filter:  1. setFilter path 2. set param
  */
 public class BeautyFeature {

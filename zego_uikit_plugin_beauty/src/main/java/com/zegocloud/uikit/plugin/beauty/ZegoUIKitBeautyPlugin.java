@@ -89,6 +89,7 @@ public class ZegoUIKitBeautyPlugin implements ZegoBeautyPluginProtocol {
         if (config == null) {
             effectsService.enableFaceDetection(false);
         } else {
+            effectsService.saveLastBeautyParam(config.saveLastBeautyParam);
             effectsService.enableFaceDetection(config.enableFaceDetection);
             effectsService.setEventHandler(config.beautyEventHandler);
         }
@@ -129,20 +130,29 @@ public class ZegoUIKitBeautyPlugin implements ZegoBeautyPluginProtocol {
         return effectsService.getEffectSDK();
     }
 
+    @Override
     public void enableBeautyFeature(ZegoBeautyPluginEffectsType beautyType, boolean enable) {
         effectsService.enableBeauty(beautyType, enable);
     }
 
+    @Override
     public int getBeautyFeatureValue(ZegoBeautyPluginEffectsType beautyType) {
         return effectsService.getBeautyValue(beautyType);
     }
 
+    @Override
     public void setBeautyFeatureValue(ZegoBeautyPluginEffectsType beautyType, int value) {
         effectsService.setBeautyValue(beautyType, value);
     }
 
-    public void resetBeautyValue(ZegoBeautyPluginEffectsType beautyType) {
-        effectsService.resetBeautyValue(beautyType);
+    @Override
+    public void resetBeautyValueToDefault(ZegoBeautyPluginEffectsType beautyType) {
+        effectsService.resetBeautyValueToDefault(beautyType);
+    }
+
+    @Override
+    public void resetBeautyValueToNone(ZegoBeautyPluginEffectsType beautyType) {
+        effectsService.resetBeautyValueToNone(beautyType);
     }
 
     public List<BeautyFeature> getGroupFeatures(BeautyGroup beautyGroup) {
