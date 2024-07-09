@@ -2,6 +2,7 @@ package com.zegocloud.uikit.plugin.beauty;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 import com.tencent.mmkv.MMKV;
 import com.zegocloud.uikit.plugin.adapter.plugins.beauty.BeautyPluginLicenseSetter;
 import com.zegocloud.uikit.plugin.adapter.plugins.beauty.IBeautyEventHandler;
@@ -137,6 +138,7 @@ public class ZegoEffectsService {
         // step 4 enableAbilities
         beautyFeaturesMap = EffectSDKHelper.getAllFeatures();
         mmkv = MMKV.mmkvWithID("beauty");
+        Log.d(TAG, "initEffectsSDKInner() called with: context = [" + context + "], saveLastBeautyParam = [" + saveLastBeautyParam + "]");
         if (saveLastBeautyParam) {
             for (String string : mmkv.allKeys()) {
                 int value = mmkv.decodeInt(string);
@@ -193,6 +195,7 @@ public class ZegoEffectsService {
         if (zegoEffects == null) {
             return;
         }
+        Log.d(TAG, "setBeautyValue() called with: beautyType = [" + beautyType + "], value = [" + value + "]");
         BeautyFeature beautyFeature = getBeautyFeature(beautyType);
         beautyFeature.getEditor().apply(value);
         beautyParams.put(beautyType, value);
@@ -284,6 +287,8 @@ public class ZegoEffectsService {
     }
 
     public int processTexture(int textureID, int width, int height) {
+        Log.d(TAG, "processTexture() called with: textureID = [" + textureID + "], width = [" + width + "], height = ["
+            + height + "]");
         if (zegoEffects == null) {
             return textureID;
         }
