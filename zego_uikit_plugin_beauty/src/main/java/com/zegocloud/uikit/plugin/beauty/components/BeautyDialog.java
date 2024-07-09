@@ -19,6 +19,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener;
 import com.google.android.material.tabs.TabLayout.Tab;
+import com.tencent.mmkv.MMKV;
 import com.zegocloud.uikit.plugin.adapter.plugins.beauty.ZegoBeautyPluginConfig;
 import com.zegocloud.uikit.plugin.adapter.plugins.beauty.ZegoBeautyPluginEffectsType;
 import com.zegocloud.uikit.plugin.beauty.R;
@@ -29,6 +30,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 public class BeautyDialog extends BottomSheetDialog {
 
@@ -76,6 +78,7 @@ public class BeautyDialog extends BottomSheetDialog {
             configFeatureItems.addAll(
                 BeautyDialogHelper.getBeautyFeatureItems(getContext(), beautyPluginConfig.effectsTypes));
         }
+
         configGroupItems = BeautyDialogHelper.getBeautyGroupItems(getContext(), configFeatureItems);
 
         for (BeautyGroupItem groupItem : configGroupItems) {
@@ -235,7 +238,6 @@ public class BeautyDialog extends BottomSheetDialog {
             beautyAdapter.setBeautyItems(makeupItems);
             beautyAdapter.removeSelectedItem();
             seekBarWithNumber.setVisibility(View.INVISIBLE);
-            currentSelectedSubType = null;
             List<Integer> showDots = new ArrayList<>();
             if (!subTypeSelectedPositions.isEmpty()) {
                 for (BeautyGroupItem configGroupItem : configGroupItems) {
@@ -273,6 +275,34 @@ public class BeautyDialog extends BottomSheetDialog {
         } else {
             beautyAdapter.setBeautyItems(groupItem.beautyFeatureItems);
         }
+
+        MMKV mmkv = MMKV.mmkvWithID("beauty_selected");
+        if (beautyPluginConfig != null) {
+            if (beautyPluginConfig.saveLastBeautyParam) {
+                String current = mmkv.getString("current", null);
+                if (current != null) {
+                    currentSelectedSubType = ZegoBeautyPluginEffectsType.getByName(current);
+                } else {
+                    currentSelectedSubType = null;
+                }
+                for (String key : mmkv.allKeys()) {
+                    if (!"current".equals(key)) {
+                        ZegoBeautyPluginEffectsType type = ZegoBeautyPluginEffectsType.getByName(key);
+                        if (type != null) {
+                            subTypeSelectedPositions.put(type, mmkv.getInt(type.name(), 0));
+                        } else {
+                            BeautyGroup group = BeautyGroup.getByName(key);
+                            if (group != null) {
+                                groupSelectedPositions.put(group, mmkv.getInt(group.name(), 0));
+                            }
+                        }
+                    }
+                }
+            } else {
+                currentSelectedSubType = null;
+            }
+        }
+
         RecyclerView recyclerviewItems = findViewById(R.id.recyclerview_items);
         recyclerviewItems.setAdapter(beautyAdapter);
         recyclerviewItems.setLayoutManager(
@@ -286,13 +316,16 @@ public class BeautyDialog extends BottomSheetDialog {
                     BeautyFeature clickFeature = clickItem.beautyFeature;
                     BeautyGroup clickFeatureParentGroup = clickFeature.getParentGroup();
                     ZegoBeautyPluginEffectsType clickFeatureParentType = clickFeature.getParentType();
+                    MMKV mmkv = MMKV.mmkvWithID("beauty_selected");
                     if (position == 0) {
                         beautyAdapter.removeSelectedItem();
                         seekBarWithNumber.setVisibility(View.INVISIBLE);
                         currentSelectedSubType = null;
+                        mmkv.remove("current");
                         // if is subTypeFeatureItems, ...
                         if (clickFeatureParentGroup == BeautyGroup.MAKEUPS && clickFeatureParentType != null) {
                             subTypeSelectedPositions.remove(clickFeatureParentType);
+                            mmkv.remove(clickFeatureParentType.name());
                             BeautyFeature parentFeature = ZegoUIKitBeautyPlugin.getInstance()
                                 .getBeautyFeature(clickFeatureParentType);
                             for (ZegoBeautyPluginEffectsType subType : parentFeature.getSubTypes()) {
@@ -302,6 +335,7 @@ public class BeautyDialog extends BottomSheetDialog {
                                 .enableBeautyFeature(clickFeature.getParentType(), false);
                         } else {
                             groupSelectedPositions.remove(clickFeatureParentGroup);
+                            mmkv.remove(clickFeatureParentGroup.name());
                             if (clickFeatureParentGroup == BeautyGroup.MAKEUPS) {
                                 resetMakeups();
                             } else if (clickFeatureParentGroup == BeautyGroup.BASIC
@@ -321,6 +355,7 @@ public class BeautyDialog extends BottomSheetDialog {
                             noneBeautyFeatures(BeautyGroup.STYLE_MAKEUP);
 
                             currentSelectedSubType = clickFeature.getBeautyType();
+                            mmkv.putString("current", currentSelectedSubType.name());
                             seekBarWithNumber.setVisibility(View.VISIBLE);
                             seekBarWithNumber.setOffsetValue(clickFeature.getMinValue());
                             seekBarWithNumber.setMax(clickFeature.getMaxValue());
@@ -334,8 +369,10 @@ public class BeautyDialog extends BottomSheetDialog {
                             // if click lipstick_xxx, subTypeSelectedPositions stores BeautyType.MAKEUP_LIPSTICK
                             // if click blusher_xxx, subTypeSelectedPositions stores BeautyType.MAKEUP_BLUSHER
                             subTypeSelectedPositions.put(clickFeatureParentType, position);
+                            mmkv.putInt(clickFeatureParentType.name(), position);
                         } else {
                             currentSelectedSubType = null;
+                            mmkv.remove("current");
                             // when select STICKERS , unselect STYLE_MAKEUP
                             if (clickFeatureParentGroup == BeautyGroup.STICKERS) {
                                 noneBeautyFeatures(BeautyGroup.STYLE_MAKEUP);
@@ -348,6 +385,10 @@ public class BeautyDialog extends BottomSheetDialog {
 
                             if (clickFeatureParentGroup != BeautyGroup.MAKEUPS) {
                                 groupSelectedPositions.put(clickFeatureParentGroup, position);
+                                if (clickFeatureParentGroup != BeautyGroup.STICKERS) {
+                                    // sticker ,not saved
+                                    mmkv.putInt(clickFeatureParentGroup.name(), position);
+                                }
 
                                 beautyAdapter.setSelectedItemIndex(position);
                                 ZegoBeautyPluginEffectsType beautyType = clickFeature.getBeautyType();
@@ -457,6 +498,8 @@ public class BeautyDialog extends BottomSheetDialog {
         Integer selectedStyleMakeupIndex = groupSelectedPositions.get(beautyGroup);
         if (selectedStyleMakeupIndex != null) {
             groupSelectedPositions.remove(beautyGroup);
+            MMKV mmkv = MMKV.mmkvWithID("beauty_selected");
+            mmkv.remove(beautyGroup.name());
         }
         List<BeautyFeature> beautyFeatures = ZegoUIKitBeautyPlugin.getInstance().getGroupFeatures(beautyGroup);
         for (BeautyFeature beautyFeature : beautyFeatures) {
@@ -465,12 +508,18 @@ public class BeautyDialog extends BottomSheetDialog {
     }
 
     private void resetMakeups() {
+        MMKV mmkv = MMKV.mmkvWithID("beauty_selected");
         Integer selectedMakeupIndex = groupSelectedPositions.get(BeautyGroup.MAKEUPS);
         if (selectedMakeupIndex != null) {
             groupSelectedPositions.remove(BeautyGroup.MAKEUPS);
+            mmkv.remove(BeautyGroup.MAKEUPS.name());
+        }
+        for (Entry<ZegoBeautyPluginEffectsType, Integer> entry : subTypeSelectedPositions.entrySet()) {
+            mmkv.remove(entry.getKey().name());
         }
         subTypeSelectedPositions.clear();
         currentSelectedSubType = null;
+        mmkv.remove("current");
         beautyAdapter.showDot(new ArrayList<>());
 
         resetBeautyFeatures(BeautyGroup.MAKEUPS);

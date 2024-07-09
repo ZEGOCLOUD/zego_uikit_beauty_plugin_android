@@ -1,8 +1,9 @@
 package com.zegocloud.uikit.plugin.beauty;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
-import android.util.Log;
 import com.tencent.mmkv.MMKV;
 import com.zegocloud.uikit.plugin.adapter.plugins.beauty.BeautyPluginLicenseSetter;
 import com.zegocloud.uikit.plugin.adapter.plugins.beauty.IBeautyEventHandler;
@@ -138,17 +139,50 @@ public class ZegoEffectsService {
         // step 4 enableAbilities
         beautyFeaturesMap = EffectSDKHelper.getAllFeatures();
         mmkv = MMKV.mmkvWithID("beauty");
-        Log.d(TAG, "initEffectsSDKInner() called with: context = [" + context + "], saveLastBeautyParam = [" + saveLastBeautyParam + "]");
         if (saveLastBeautyParam) {
+            String lastFilter = null;
+            String lastStyle = null;
             for (String string : mmkv.allKeys()) {
-                int value = mmkv.decodeInt(string);
-                ZegoBeautyPluginEffectsType beautyType = ZegoBeautyPluginEffectsType.getByName(string);
-                enableBeauty(beautyType, true);
-                BeautyFeature beautyFeature = getBeautyFeature(beautyType);
-                beautyFeature.getEditor().apply(value);
-                beautyParams.put(beautyType, value);
+                if ("last_filter".equals(string)) {
+                    lastFilter = mmkv.getString(string, null);
+                } else if ("last_style".equals(string)) {
+                    lastStyle = mmkv.getString(string, null);
+                } else {
+                    int value = mmkv.decodeInt(string);
+                    ZegoBeautyPluginEffectsType beautyType = ZegoBeautyPluginEffectsType.getByName(string);
+                    BeautyFeature beautyFeature = getBeautyFeature(beautyType);
+                    if (beautyFeature.getParentGroup() == BeautyGroup.FILTERS
+                        || beautyFeature.getParentGroup() == BeautyGroup.STYLE_MAKEUP) {
+                        // set later.
+                    } else {
+                        enableBeauty(beautyType, true);
+                        beautyFeature.getEditor().apply(value);
+                    }
+                    beautyParams.put(beautyType, value);
+                }
             }
+
+            if (!TextUtils.isEmpty(lastStyle)) {
+                ZegoBeautyPluginEffectsType lastStyleType = ZegoBeautyPluginEffectsType.getByName(lastStyle);
+                enableBeauty(lastStyleType, true);
+                setBeautyValue(lastStyleType, beautyParams.get(lastStyleType));
+            }
+
+            String finalLastFilter = lastFilter;
+            new Handler(Looper.myLooper()).postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (!TextUtils.isEmpty(finalLastFilter)) {
+                        ZegoBeautyPluginEffectsType lastFilterType = ZegoBeautyPluginEffectsType.getByName(
+                            finalLastFilter);
+                        enableBeauty(lastFilterType, true);
+                        setBeautyValue(lastFilterType, beautyParams.get(lastFilterType));
+                    }
+                }
+            },1000);
+
         } else {
+            resetBeautyValueToDefault(null);
             mmkv.clear();
         }
     }
@@ -189,19 +223,38 @@ public class ZegoEffectsService {
         }
         BeautyFeature beautyFeature = getBeautyFeature(beautyType);
         beautyFeature.getEditor().enable(enable);
+        if (!enable) {
+            beautyParams.remove(beautyType);
+            mmkv.remove(beautyType.name());
+
+            if (beautyType.name().equals(mmkv.getString("last_filter", null))) {
+                mmkv.remove("last_filter");
+            }
+            if (beautyType.name().equals(mmkv.getString("last_style", null))) {
+                mmkv.remove("last_style");
+            }
+        }
     }
 
     public void setBeautyValue(ZegoBeautyPluginEffectsType beautyType, int value) {
         if (zegoEffects == null) {
             return;
         }
-        Log.d(TAG, "setBeautyValue() called with: beautyType = [" + beautyType + "], value = [" + value + "]");
         BeautyFeature beautyFeature = getBeautyFeature(beautyType);
         beautyFeature.getEditor().apply(value);
         beautyParams.put(beautyType, value);
-        if (saveLastBeautyParam && mmkv != null) {
-            mmkv.encode(beautyType.toString(), value);
+        if (saveLastBeautyParam) {
+            if (mmkv != null) {
+                mmkv.encode(beautyType.toString(), value);
+                if (beautyFeature.getParentGroup() == BeautyGroup.FILTERS) {
+                    mmkv.putString("last_filter", beautyFeature.getBeautyType().name());
+                }
+                if (beautyFeature.getParentGroup() == BeautyGroup.STYLE_MAKEUP) {
+                    mmkv.putString("last_style", beautyFeature.getBeautyType().name());
+                }
+            }
         }
+
     }
 
     public int getBeautyValue(ZegoBeautyPluginEffectsType beautyType) {
@@ -287,8 +340,6 @@ public class ZegoEffectsService {
     }
 
     public int processTexture(int textureID, int width, int height) {
-        Log.d(TAG, "processTexture() called with: textureID = [" + textureID + "], width = [" + width + "], height = ["
-            + height + "]");
         if (zegoEffects == null) {
             return textureID;
         }

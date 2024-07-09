@@ -1,6 +1,7 @@
 package com.zegocloud.uikit.plugin.beauty.bean;
 
 import android.text.TextUtils;
+import android.util.Log;
 import com.zegocloud.uikit.plugin.adapter.plugins.beauty.ZegoBeautyPluginConfig;
 import com.zegocloud.uikit.plugin.beauty.ZegoEffectsService;
 import com.zegocloud.uikit.plugin.beauty.ZegoUIKitBeautyPlugin;
@@ -337,6 +338,7 @@ public abstract class BeautyEditor {
         }
     }
 
+    private static final String TAG = "BeautyEditor";
     // MARK: - Filters
     public static class FilterEditor extends BeautyEditor {
 
@@ -350,6 +352,7 @@ public abstract class BeautyEditor {
 
         @Override
         public void enable(boolean enable) {
+            Log.d(TAG, "FilterEditor enable() called with: path = [" + path + "],enable:" + enable);
             if (enable) {
                 getZEGOEffects().setFilter(path);
             } else {
@@ -359,6 +362,7 @@ public abstract class BeautyEditor {
 
         @Override
         public void apply(int value) {
+            Log.d(TAG, "FilterEditor apply() called with: path = [" + path + "],value:" + value);
             ZegoEffectsFilterParam param = new ZegoEffectsFilterParam();
             param.intensity = value;
             getZEGOEffects().setFilterParam(param);
@@ -542,6 +546,7 @@ public abstract class BeautyEditor {
             } else {
                 getZEGOEffects().setMakeup(null);
             }
+            Log.d(TAG, "StyleMakeupEditor enable() called with: path = [" + path + "],enable:" + enable);
         }
 
         @Override
@@ -549,6 +554,7 @@ public abstract class BeautyEditor {
             ZegoEffectsMakeupParam param = new ZegoEffectsMakeupParam();
             param.intensity = value;
             getZEGOEffects().setMakeupParam(param);
+            Log.d(TAG, "StyleMakeupEditor apply() called with: path = [" + path + "],value:" + value);
         }
     }
 
@@ -566,6 +572,7 @@ public abstract class BeautyEditor {
 
         @Override
         public void enable(boolean enable) {
+            Log.d(TAG, "StickerEditor enable() called with: path = [" + path + "],enable:" + enable);
             if (enable) {
                 getZEGOEffects().setPendant(path);
             } else {
