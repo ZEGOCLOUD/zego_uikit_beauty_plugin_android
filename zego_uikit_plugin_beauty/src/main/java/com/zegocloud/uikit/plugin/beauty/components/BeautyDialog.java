@@ -12,6 +12,7 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
@@ -299,7 +300,10 @@ public class BeautyDialog extends BottomSheetDialog {
                     }
                 }
             } else {
+                subTypeSelectedPositions.clear();
+                groupSelectedPositions.clear();
                 currentSelectedSubType = null;
+                ZegoUIKitBeautyPlugin.getInstance().resetBeautyValueToDefault(null);
             }
         }
 
