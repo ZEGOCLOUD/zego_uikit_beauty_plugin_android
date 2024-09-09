@@ -26,6 +26,7 @@ import im.zego.effects.entity.ZegoEffectsVideoFrameParam;
 import im.zego.effects.enums.ZegoEffectsScaleMode;
 import im.zego.effects.enums.ZegoEffectsVideoFrameFormat;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -200,6 +201,20 @@ public class ZegoEffectsService {
         zegoEffects.enableChromaKeyBackground(false);
         zegoEffects.enableChromaKeyBackgroundBlur(false);
         zegoEffects.enableChromaKeyBackgroundMosaic(false);
+
+        if (saveLastBeautyParam) {
+            List<String> removeKeys = new ArrayList<>();
+            for (String key : mmkv.allKeys()) {
+                ZegoBeautyPluginEffectsType beautyType = ZegoBeautyPluginEffectsType.getByName(key);
+                BeautyFeature beautyFeature = getBeautyFeature(beautyType);
+                if (beautyFeature != null && beautyFeature.getParentGroup() == BeautyGroup.BACKGROUND) {
+                    removeKeys.add(key);
+                }
+            }
+            for (String removeKey : removeKeys) {
+                mmkv.remove(removeKey);
+            }
+        }
     }
 
     public BeautyFeature getBeautyFeature(ZegoBeautyPluginEffectsType beautyType) {
