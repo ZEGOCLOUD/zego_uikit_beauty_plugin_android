@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import timber.log.Timber;
 
 public class ZegoEffectsService {
@@ -47,18 +48,26 @@ public class ZegoEffectsService {
     private LicenceProvider provider;
     private boolean saveLastBeautyParam;
     private MMKV mmkv;
+    private final AtomicBoolean isSDKInit = new AtomicBoolean();
 
     public static String getResourceRootFolder() {
         return resourceRootFolder;
     }
 
     public void init(Context context, long appID, String appSign, IGetLicenseCallback callback) {
+        boolean result = isSDKInit.compareAndSet(false, true);
+        Timber.d("init() called with: context = [" + context + "], appID = [" + appID + "], appSign is null : ["
+            + TextUtils.isEmpty(appSign) + "], result = [" + result + "]");
+        if (!result) {
+            return;
+        }
+        MMKV.initialize(context);
+
         String cacheDir = context.getExternalFilesDir(null).getPath();
         String resourceFolderName = "BeautyResources";
         resourceRootFolder = cacheDir + File.separator + resourceFolderName;
         // step 1, setResources
         EffectSDKHelper.setResources(context, cacheDir, resourceFolderName);
-        MMKV.initialize(context);
 
         if (!TextUtils.isEmpty(appSign)) {
             // step 2, getLicence
@@ -98,6 +107,7 @@ public class ZegoEffectsService {
     private void initEffectsSDKInner(Context context, String license) {
         // step 3 create effect
         zegoEffects = ZegoEffects.create(license, context);
+        Timber.d("initEffectsSDKInner,zegoEffects : " + zegoEffects);
         zegoEffects.enableFaceDetection(enableFaceDetection);
         zegoEffects.setEventHandler(new ZegoEffectsEventHandler() {
             @Override
@@ -180,7 +190,7 @@ public class ZegoEffectsService {
                         setBeautyValue(lastFilterType, beautyParams.get(lastFilterType));
                     }
                 }
-            },1000);
+            }, 1000);
 
         } else {
             resetBeautyValueToDefault(null);
@@ -335,6 +345,7 @@ public class ZegoEffectsService {
     }
 
     public void saveLastBeautyParam(boolean saveLastBeautyParam) {
+        Timber.d("saveLastBeautyParam() called with: saveLastBeautyParam = [" + saveLastBeautyParam + "]");
         this.saveLastBeautyParam = saveLastBeautyParam;
     }
 
@@ -379,6 +390,7 @@ public class ZegoEffectsService {
     }
 
     public void unInit() {
+        Timber.d("unInit() called,zegoEffects :" + zegoEffects);
         resetAndDisableAllAbilities();
         if (zegoEffects != null) {
             zegoEffects.destroy();
